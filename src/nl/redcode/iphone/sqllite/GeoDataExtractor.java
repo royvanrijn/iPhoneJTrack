@@ -1,8 +1,9 @@
 package nl.redcode.iphone.sqllite;
 
 import java.io.File;
+import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -20,19 +21,13 @@ import org.tmatesoft.sqljet.core.table.SqlJetDb;
  */
 public class GeoDataExtractor {
 
-	private static final Date start = new GregorianCalendar(2001, 1, 1).getTime();
-	
 	public List<DataPoint> extractGeoData(File dbFile) throws Exception {
 		List<DataPoint> geoData = new ArrayList<DataPoint>();
 		SqlJetDb db = SqlJetDb.open(dbFile, false);
 		db.beginTransaction(SqlJetTransactionMode.READ_ONLY);
 
 		try {
-//	List the tables:
-//			for(String table:db.getSchema().getTableNames()) {
-//				System.out.println(table+"----");
-//				System.out.println(db.getTable(table).getDefinition().getColumns());
-//			}
+
 			ISqlJetTable table = db.getTable("CellLocation");
 			extractGeoDataFromTable(geoData, table);
 			
@@ -47,12 +42,21 @@ public class GeoDataExtractor {
 		try {
 			if (!cursor.eof()) {
 				do {
-					//Extract the timestamp (in seconds from 01-01-2001), the latitude and longitude.
-					double timestamp = cursor.getFloat("Timestamp");
 					double latitude = cursor.getFloat("Latitude");
 					double longitude = cursor.getFloat("Longitude");
-					String dateStamp = new Date(start.getTime()+((long)timestamp*1000)).toString();
-					geoData.add(new DataPoint(dateStamp, latitude, longitude));
+					double timestamp = cursor.getFloat("Timestamp");
+					int confidence = (int) cursor.getInteger("Confidence");
+					
+					Calendar c = new GregorianCalendar();
+					c.set(Calendar.YEAR, 2001);
+					c.set(Calendar.DAY_OF_MONTH, 0);
+					c.set(Calendar.MONTH, 0);
+					c.add(Calendar.SECOND, (int)timestamp);
+					String formattedDate = DateFormat.getDateTimeInstance().format(c.getTime());
+
+					if(confidence >= 70) {
+						geoData.add(new DataPoint(formattedDate, latitude, longitude));
+					}
 					
 				} while (cursor.next());
 			}
