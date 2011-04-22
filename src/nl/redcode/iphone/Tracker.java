@@ -7,6 +7,15 @@ import nl.redcode.iphone.kml.KMLGenerator;
 import nl.redcode.iphone.sqllite.DataPoint;
 import nl.redcode.iphone.sqllite.GeoDataExtractor;
 
+/**
+ * Main class
+ * 
+ * TODO: This could use a nice GUI...!
+ * TODO: Also: iPhone backups are in default directories, why not check those and let the user pick one if found.
+ * 
+ * @author Roy van Rijn
+ *
+ */
 public class Tracker {
 
 	public static void main(String[] args) throws Exception {
@@ -33,5 +42,4 @@ public class Tracker {
 		KMLGenerator kmlGenerator = new KMLGenerator();
 		kmlGenerator.generateKML(new File("iPhoneData.kml"), geoData);
 	}
-
 }

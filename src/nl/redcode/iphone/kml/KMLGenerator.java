@@ -12,6 +12,9 @@ import nl.redcode.iphone.sqllite.DataPoint;
  * Also: The resulting file is quite unreadable in Google Earth, but it is a start!
  * Do with it what you want :-)
  * 
+ * TODO: Maybe add more output generators, GPX?
+ * TODO: Define (plugin-like) interface for handling the List<DataPoint>
+ * 
  * @author Roy van Rijn
  *
  */

@@ -28,6 +28,8 @@ public class GeoDataExtractor {
 
 		try {
 
+			//TODO: Maybe also use: db.getTable("WifiLocation");
+
 			ISqlJetTable table = db.getTable("CellLocation");
 			extractGeoDataFromTable(geoData, table);
 			
